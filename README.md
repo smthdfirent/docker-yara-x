@@ -1,4 +1,4 @@
-# Docker containers for YARA
+# Docker containers for YARA-X
 
 Dockerfile which allows to install [YARA-X](https://github.com/VirusTotal/yara-x) in a Linux Debian docker container with Rust already installed.
 
