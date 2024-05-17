@@ -1,4 +1,7 @@
-FROM rust:1.75-slim
+ARG yarax_version="v0.3.0"
+
+FROM rust:1.78-slim
+ARG yarax_version
 
 # Install required packages
 RUN apt-get update && apt-get install -y \
@@ -10,6 +13,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /opt
 RUN git clone --recursive https://github.com/VirusTotal/yara-x.git
 WORKDIR /opt/yara-x
+RUN git checkout tags/${yarax_version}
 
 # Build and install YARA-X
 RUN cargo build --release
