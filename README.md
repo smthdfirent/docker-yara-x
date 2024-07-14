@@ -1,10 +1,15 @@
-# Docker containers for YARA
+# Docker containers for YARA-X
 
 Dockerfile which allows to install [YARA-X](https://github.com/VirusTotal/yara-x) in a Linux Debian docker container.
 
-By default, YARA-X v0.4.0 will be installed.
-
 You may add YARA rules in the ```rules``` directory. These will be copied into the ```${username}``` home directory of the container (default: ```/home/user/rules```).
+
+You may also add Jupyter notebooks in the ```notebooks``` directory that will be copied into the ```/home/${username}/notebooks```. By default, the container will start a Jupyter notebook server (exposed on port 8080), allowing to use the Python library for YARA-X in Jupyter notebooks.
+
+
+## Disclaimer
+
+This Dockerfile is intended **to be used in an isolated analysis environment, for testing or development purpose only**.
 
 
 ## Building a container
@@ -12,14 +17,27 @@ You may add YARA rules in the ```rules``` directory. These will be copied into t
 The following command will build a container for YARA-X (```main``` branch):
 
 ```
-docker build -t yara-x:v0.4.0 .
+docker build -t yara-x:v0.5.0 .
 ```
 
 The container can then be run using the following command:
 
 ```
-docker run -v <path-to-samples>:/tmp/samples -it --rm yara-x:v0.4.0
+docker run -v <path-to-samples>:/tmp/samples -it --rm yara-x:v0.5.0
 ```
+
+Building the container without the ```run_jupyter``` parameter set to ```false``` will result in jupyter notebook being run at startup. The following command allows to build a container which will not run jupyter notebook:
+
+```
+docker build -t yara-x:v0.5.0 . --build-arg run_jupyter=false
+```
+
+One can still start a jupyter notebook server from the container which has been built and access it as long as the appropriate port has been "published" (for example, add ```-p 8080:8080``` to the ```docker run``` command line for port 8080).
+
+```
+$ start-notebook.sh
+```
+
 
 ## Building a container for a specific version of YARA-X
 
@@ -38,7 +56,6 @@ docker run -v <path-to-samples>:/tmp/samples -it --rm yara-x-v0.3.0:v0.3.0
 
 
 ## How to use YARA-X?
-
 
 In the container, run ```yr``` from the command line to perform a scan. For example:
 
@@ -71,7 +88,7 @@ Options:
   -V, --version  Print version
 ```
 
-The Python library for YARA-X is installed in a Python virtual environment located in the ```${username}``` home directory. To use it, activate the ```.venv``` virtual environment:
+The Python library for YARA-X is installed in a Python virtual environment located in the ```${username}``` home directory. To use it, activate the ```venv``` virtual environment:
 
 
 ```

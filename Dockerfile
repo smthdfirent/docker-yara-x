@@ -1,11 +1,13 @@
-ARG yarax_version="v0.4.0"
+ARG yarax_version="v0.5.0"
 ARG install_dir="/opt/tools"
 ARG username="user"
+ARG run_jupyter="true"
 
 FROM rust:1.79-slim
 ARG yarax_version
 ARG install_dir
 ARG username
+ARG run_jupyter
 
 # Install required packages
 RUN apt-get update && apt-get install -y \
@@ -17,7 +19,7 @@ RUN apt-get update && apt-get install -y \
     python3-venv \
     pipx
 
-# Add a user and switch to user
+# Add a user
 RUN useradd --create-home ${username}
 
 # Create the installation directory and switch to ${username}
@@ -42,21 +44,30 @@ RUN maturin build --manifest-path py/Cargo.toml
 
 # Create a virtualenv and install the yara_x package
 WORKDIR /home/${username}/
+ENV VIRTUAL_ENV=/home/${username}/venv
 RUN python3 -m venv venv
-RUN . venv/bin/activate && pip install ${install_dir}/yara-x/target/wheels/yara_x*
+ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
+RUN . venv/bin/activate && pip install ${install_dir}/yara-x/target/wheels/yara_x* && pip install jupyter
 
-# Copy the YARA rules that may be in the rules directory
+# Copy the YARA rules and the notebooks
 USER root
-COPY rules/ /home/${username}/rules/
-RUN chown -R ${username}:${username} /home/${username}/rules/
+COPY --chown=${username} rules/ /home/${username}/rules/
+COPY --chown=${username} notebooks/ /home/${username}/notebooks/
 
-# Cleanup
+# Clean up
 USER root
 RUN apt-get -y remove git libssl-dev
 RUN apt-get -y autoremove
 RUN rm -rf /var/cache/apt/*
 
-# Switch to ${username}
+# Switch to ${username} and create startup scripts
 USER ${username}
 WORKDIR /home/${username}/
+RUN mkdir scripts/
+ENV PATH="$PATH:/home/${username}/scripts"
+RUN echo "#!/bin/bash\nexec jupyter notebook --ip=0.0.0.0 --port=8080 --no-browser" > scripts/start-notebook.sh
+RUN chmod +x scripts/start-notebook.sh
+RUN if test "${run_jupyter}" = "true"; then echo "#!/bin/bash\n./start-notebook.sh" > scripts/start.sh; else echo "#!/bin/bash\n/bin/bash" > scripts/start.sh; fi
+RUN chmod +x scripts/start.sh
+CMD [ "start.sh" ]
 
