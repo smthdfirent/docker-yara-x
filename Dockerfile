@@ -67,7 +67,7 @@ RUN mkdir scripts/
 ENV PATH="$PATH:/home/${username}/scripts"
 RUN echo "#!/bin/bash\nexec jupyter notebook --ip=0.0.0.0 --port=8080 --no-browser" > scripts/start-notebook.sh
 RUN chmod +x scripts/start-notebook.sh
-RUN if test "${run_jupyter}" = "true"; then echo "#!/bin/bash\n./start-notebook.sh" > scripts/start.sh; else echo "#!/bin/bash\n/bin/bash" > scripts/start.sh; fi
+RUN if test "${run_jupyter}" = "true"; then echo "#!/bin/bash\nstart-notebook.sh" > scripts/start.sh; else echo "#!/bin/bash\n/bin/bash" > scripts/start.sh; fi
 RUN chmod +x scripts/start.sh
 CMD [ "start.sh" ]
 

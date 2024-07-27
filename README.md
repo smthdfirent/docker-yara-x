@@ -23,7 +23,7 @@ docker build -t yara-x:v0.5.0 .
 The container can then be run using the following command:
 
 ```
-docker run -v <path-to-samples>:/tmp/samples -it --rm yara-x:v0.5.0
+docker run -v <path-to-samples>:/tmp/samples -it -p 8080:8080 --rm yara-x:v0.5.0
 ```
 
 Building the container without the ```run_jupyter``` parameter set to ```false``` will result in jupyter notebook being run at startup. The following command allows to build a container which will not run jupyter notebook:
@@ -51,7 +51,7 @@ docker build --build-arg yarax_version=v0.3.0 -t yara-x-v0.3.0:v0.3.0 .
 Then, the container can be run using the following command:
 
 ```
-docker run -v <path-to-samples>:/tmp/samples -it --rm yara-x-v0.3.0:v0.3.0
+docker run -v <path-to-samples>:/tmp/samples -it -p 8080:8080 --rm yara-x-v0.3.0:v0.3.0
 ```
 
 
