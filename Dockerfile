@@ -1,9 +1,9 @@
-ARG yarax_version="v0.5.0"
+ARG yarax_version="v0.6.0"
 ARG install_dir="/opt/tools"
 ARG username="user"
 ARG run_jupyter="true"
 
-FROM rust:1.79-slim
+FROM rust:1.80-slim
 ARG yarax_version
 ARG install_dir
 ARG username

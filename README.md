@@ -17,19 +17,19 @@ This Dockerfile is intended **to be used in an isolated analysis environment, fo
 The following command will build a container for YARA-X (```main``` branch):
 
 ```
-docker build -t yara-x:v0.5.0 .
+docker build -t yara-x:v0.6.0 .
 ```
 
 The container can then be run using the following command:
 
 ```
-docker run -v <path-to-samples>:/tmp/samples -it -p 8080:8080 --rm yara-x:v0.5.0
+docker run -v <path-to-samples>:/tmp/samples -it -p 8080:8080 --rm yara-x:v0.6.0
 ```
 
 Building the container without the ```run_jupyter``` parameter set to ```false``` will result in jupyter notebook being run at startup. The following command allows to build a container which will not run jupyter notebook:
 
 ```
-docker build -t yara-x:v0.5.0 . --build-arg run_jupyter=false
+docker build -t yara-x:v0.6.0 . --build-arg run_jupyter=false
 ```
 
 One can still start a jupyter notebook server from the container which has been built and access it as long as the appropriate port has been "published" (for example, add ```-p 8080:8080``` to the ```docker run``` command line for port 8080).
